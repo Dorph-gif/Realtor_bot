@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: property_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  db_service:
+    build:
+      context: .
+      dockerfile: src/database_service/Dockerfile
+    restart: always
+    ports:
+      - "8005:8005"
+    depends_on:
+      - db
+    volumes:
+      - ./ad_images:/ad_images
+      - ./logs:/app/logs
+
+  bot_logic:
+    build:
+      context: .
+      dockerfile: src/bot_logic/Dockerfile
+    restart: always
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  db_data:

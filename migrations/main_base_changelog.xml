@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd">
+
+    <changeSet id="1" author="your_name">
+    
+        <createTable tableName="users">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="telegram_id" type="BIGINT">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="is_admin" type="BOOLEAN" defaultValue="false"/>
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="properties">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="state" type="string" defaultValue="free"/>
+            <column name="return_contact" type="string">
+                <nullable="false"/>
+            </column>
+            <column name="property_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deal_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="VARCHAR(100)"/>
+            <column name="house_number" type="VARCHAR(20)"/>
+            <column name="apartment_number" type="VARCHAR(20)"/>
+            <column name="rooms" type="INT"/>
+            <column name="balcony" type="BOOLEAN" defaultValue="false"/>
+            <column name="renovated" type="VARCHAR(100)"/>
+            <column name="total_area" type="INT"/>
+            <column name="floor" type="INT"/>
+            <column name="total_floors" type="INT"/>
+            <column name="deposit" type="INT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <createTable tableName="property_photos">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="property_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_property_photos" references="properties(id)"/>
+            </column>
+            <column name="photo_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_property_preferences">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="telegram_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_user_preferences" references="users(telegram_id)"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deal_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="areas" type="JSONB"/>
+            <column name="min_price" type="INT"/>
+            <column name="max_price" type="INT"/>
+            <column name="min_rooms" type="INT"/>
+            <column name="max_rooms" type="INT"/>
+            <column name="min_total_area" type="DECIMAL(10,2)"/>
+            <column name="max_total_area" type="DECIMAL(10,2)"/>
+            <column name="balcony" type="BOOLEAN"/>
+            <column name="renovated" type="VARCHAR(100)"/>
+            <column name="min_deposit" type="INT"/>
+            <column name="max_deposit" type="INT"/>
+            <column name="floor" type="INT"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_floors" type="INT"/>
+        </createTable>
+
+        <createTable tableName="user_favorites">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="telegram_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_user_favorites" references="users(telegram_id)"/>
+            </column>
+            <column name="property_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_property_favorites" references="properties(id)"/>
+            </column>
+        </createTable>
+        
+    </changeSet>
+</databaseChangeLog>
