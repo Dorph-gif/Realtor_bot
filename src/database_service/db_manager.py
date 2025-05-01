@@ -452,7 +452,6 @@ class SqlDatabaseManager:
 
             return filters
 
-
     async def add_property(self, property_data):
         async with self.pool.acquire() as conn:
             try:

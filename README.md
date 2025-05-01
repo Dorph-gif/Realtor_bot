@@ -4,6 +4,9 @@
 
 применение схемы базы данных: 
 
+с запущенной базой данных применить src.database_service.create_tables
+
+
 liquibase \
   --driver=org.postgresql.Driver \
   --url="jdbc:postgresql://localhost:5434/property_db" \
@@ -11,3 +14,7 @@ liquibase \
   --password=password \
   --changeLogFile=migrations/main_base_changelog.xml \
   update
+
+# Launch
+
+Запуск происходит командой docker-compose up --build

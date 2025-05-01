@@ -430,6 +430,12 @@ async def delete_property(
         if not property_id:
             raise HTTPException(status_code=400, detail="ID is required")
 
+        count = await database_manager.get_property_photos_count(property_id=property_id)
+
+        for i in range(count):
+            filepath = os.path.join(IMAGE_UPLOAD_FOLDER, f"{property_id}_{i}.jpeg")
+            os.remove(filepath)
+
         await database_manager.delete_property(property_id)
 
         return {"status": "ok", "property_id": property_id}
