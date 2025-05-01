@@ -116,8 +116,8 @@ MESSAGES = {
     "PROPERTY_FILTERS:IS_ACTIVE": [
         "Присылать уведомления о новых объектах, удовлетворяющих фильтру?",
         [            
-            [Button.inline("Да", "is_active:yes"),
-             Button.inline("Нет", "is_active:no")],
+            [Button.inline("Да", "is_active:true"),
+             Button.inline("Нет", "is_active:false")],
             [Button.inline("В меню", "/start")]
         ]
     ],
@@ -280,8 +280,8 @@ MESSAGES = {
     "UPDATE_FILTER:IS_ACTIVE": [
         "Присылать уведомления о новых объектах, удовлетворяющих фильтру?",
         [            
-            [Button.inline("Да", "upd_is_active:yes"),
-             Button.inline("Нет", "upd_is_active:no")],
+            [Button.inline("Да", "upd_is_active:true"),
+             Button.inline("Нет", "upd_is_active:false")],
             [Button.inline("В меню", "/start")]
         ]
     ],

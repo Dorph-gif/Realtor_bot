@@ -12,7 +12,7 @@ from telethon.types import MessageMediaDocument
 from fastapi import UploadFile
 
 from src.bot_logic.state_machine import get_state_machine
-from src.bot_logic.utils import is_admin, media_to_upload_file
+from src.bot_logic.utils import is_admin, media_to_upload_file, send_property_info
 from src.bot_logic.database_service_client import get_database_service_client
 
 load_dotenv()
@@ -216,6 +216,15 @@ class AddPropertyHandler:
             database_client = get_database_service_client()
             respond = await database_client.new_property(user_id, self.property_params)
             property_id = respond["property_id"]
+
+            for user in respond["users_id"]:
+                message = "Посмотрите на новое объявление, подъодящее под ваши фильтры!"
+                buttons = [ 
+                    [Button.inline("Связаться с риелтором 🤝", f"like:-:{property_id}")],
+                    [Button.inline("В избранное ❤️", f"to_favorites:{property_id}")],
+                    [Button.inline("В меню", "/start")]
+                ]
+                await send_property_info(self.client, user, property_id, message=message, buttons=buttons)
 
             count = 0
             for image in images:

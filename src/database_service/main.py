@@ -356,8 +356,9 @@ async def add_property(
 ):
     try:
         property_id = await database_manager.add_property(property)
+        users_id = await database_manager.get_filters_for_property(property)
 
-        return {"status": "ok" , "property_id": property_id}
+        return {"status": "ok" , "property_id": property_id, "users_id": users_id}
     except Exception as e:
         logger.exception(f"Failed to add property: {e}")
         raise HTTPException(status_code=500, detail=str(e))

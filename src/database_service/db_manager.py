@@ -391,6 +391,68 @@ class SqlDatabaseManager:
                 logger.exception(f"Failed to unregister admin: {e}")
                 raise
 
+    async def get_filters_for_property(self, property):
+        async with self.pool.acquire() as conn:
+            query = """
+            SELECT telegram_id 
+            FROM user_property_preferences 
+            WHERE is_active = TRUE
+            """
+            params = []
+
+            if property.property_type:
+                query += " AND (property_type IS NULL OR property_type = $1)"
+                params.append(property.property_type)
+
+            if property.deal_type:
+                query += " AND (deal_type IS NULL OR deal_type = $2)"
+                params.append(property.deal_type)
+
+            if property.city:
+                query += " AND (city IS NULL OR city = $3)"
+                params.append(property.city)
+
+            if property.area:
+                query += " AND (areas IS NULL OR areas @> $4::jsonb)"
+                params.append(property.area)
+
+            if property.rooms is not None:
+                query += " AND (min_rooms IS NULL OR max_rooms IS NULL OR (min_rooms <= $5 AND max_rooms >= $5))"
+                params.append(property.rooms)
+
+            if property.price is not None:
+                query += " AND (min_price IS NULL OR max_price IS NULL OR (min_price <= $6 AND max_price >= $6))"
+                params.append(property.price)
+
+            if property.balcony is not None:
+                query += " AND (balcony IS NULL OR balcony = $7)"
+                params.append(property.balcony)
+
+            if property.renovated:
+                query += " AND (renovated IS NULL OR renovated = $8)"
+                params.append(property.renovated)
+
+            if property.total_area is not None:
+                query += " AND (min_total_area IS NULL OR max_total_area IS NULL OR (min_total_area <= $9 AND max_total_area >= $9))"
+                params.append(property.total_area)
+
+            if property.floor is not None:
+                query += " AND (floor IS NULL OR floor = $10)"
+                params.append(property.floor)
+
+            if property.total_floors is not None:
+                query += " AND (total_floors IS NULL OR total_floors = $11)"
+                params.append(property.total_floors)
+
+            if property.deposit is not None:
+                query += " AND (min_deposit IS NULL OR max_deposit IS NULL OR (min_deposit <= $12 AND max_deposit >= $12))"
+                params.append(property.deposit)
+
+            filters = await conn.fetch(query, *params)
+
+            return filters
+
+
     async def add_property(self, property_data):
         async with self.pool.acquire() as conn:
             try:
