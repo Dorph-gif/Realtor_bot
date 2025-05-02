@@ -6,6 +6,7 @@
 
 с запущенной базой данных применить src.database_service.create_tables
 
+или
 
 liquibase \
   --driver=org.postgresql.Driver \

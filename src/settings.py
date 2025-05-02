@@ -1,8 +1,12 @@
 import typing
+import os
 from pathlib import Path
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+
+load_dotenv()
 
 __all__ = ("TGBotSettings",)
 
@@ -10,9 +14,9 @@ __all__ = ("TGBotSettings",)
 class TGBotSettings(BaseSettings):
     debug: bool = Field(default=False)
 
-    api_id: int = Field("22244987")
-    api_hash: str = Field("5b2b7b9575535af6cbdb3335a5d95366")
-    token: str = Field("7698584724:AAFWGnZlNt88TsZvxXrd0fcm7o8VfU5ntTM")
+    api_id: int = Field(os.getenv("BOT_API_ID"))
+    api_hash: str = Field(os.getenv("BOT_API_HASH"))
+    token: str = Field(os.getenv("BOT_TOKEN"))
 
     model_config: typing.ClassVar[SettingsConfigDict] = SettingsConfigDict(
         extra="ignore",
