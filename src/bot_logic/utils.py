@@ -198,10 +198,10 @@ async def send_property_info(client: TelegramClient, user_id: int, property_id: 
 
         message += f"Состояние: {property_info.get('state', 'Не указано')}\n"
         message += f"Адрес: {property_info.get('city', 'Не указано')}"
-        message += "{property_info.get('area', 'Не указано')}"
-        message += "{property_info.get('street', 'Не указано')}"
-        message += "{property_info.get('house_number', 'Не указано')}"
-        message += "{property_info.get('apartment_number', 'Не указано')}\n"
+        message += f"{property_info.get('area', 'Не указано')}"
+        message += f"{property_info.get('street', 'Не указано')}"
+        message += f"{property_info.get('house_number', 'Не указано')}"
+        message += f"{property_info.get('apartment_number', 'Не указано')}\n"
         
         message += f"Тип: {property_info.get('property_type', 'Не указано')}\n"
         message += f"Тип сделки: {property_info.get('deal_type', 'Не указано')}\n"

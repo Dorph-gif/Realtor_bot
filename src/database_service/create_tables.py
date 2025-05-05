@@ -48,6 +48,7 @@ def create_properties_table(conn):
                 floor INT,
                 total_floors INT,
                 deposit INT,
+                url, text
                 created_at TIMESTAMP DEFAULT NOW(),
                 updated_at TIMESTAMP DEFAULT NOW()
             );
@@ -80,7 +81,7 @@ def create_user_property_preferences_table(conn):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS user_property_preferences (
                 id SERIAL PRIMARY KEY,
-                telegram_id INT NOT NULL,
+                telegram_id BIGINT NOT NULL,
                 name VARCHAR(100) NOT NULL,
                 property_type VARCHAR(100) NOT NULL,
                 deal_type VARCHAR(100) NOT NULL,
@@ -115,7 +116,7 @@ def create_user_favorites_table(conn):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS user_favorites (
                 id SERIAL PRIMARY KEY,
-                telegram_id INT NOT NULL,
+                telegram_id BIGINT NOT NULL,
                 property_id INT NOT NULL,
                 created_ad TIMESTAMP DEFAULT NOW(),
                 CONSTRAINT fk_user_favorites
@@ -176,7 +177,7 @@ def create_user_favorites_table(conn):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS user_favorites (
                 id SERIAL PRIMARY KEY,
-                telegram_id INT NOT NULL,
+                telegram_id BIGINT NOT NULL,
                 property_id INT NOT NULL,
                 CONSTRAINT fk_user_favorites
                     FOREIGN KEY(telegram_id)

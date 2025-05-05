@@ -8,7 +8,7 @@ import json
 from telethon import TelegramClient, events, Button
 
 from src.bot_logic.state_machine import get_state_machine
-from src.bot_logic.utils import go_to_neutral_state, send_current_state_message
+from src.bot_logic.utils import go_to_neutral_state, send_current_state_message, format_filter_message
 from src.bot_logic.database_service_client import get_database_service_client
 
 load_dotenv()
@@ -189,7 +189,7 @@ class NewPropertyFilterHandler:
 
         property_filter = state_machine.get_property_filter(user_id)
         if property_filter:
-            filter_string = "\n".join([f"{key}: {value}" for key, value in property_filter.items()])
+            filter_string = format_filter_message(property_filter)
         else:
             filter_string = "Не удалось получить информацию о фильтре"
 
