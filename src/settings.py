@@ -22,6 +22,6 @@ class TGBotSettings(BaseSettings):
         extra="ignore",
         frozen=True,
         case_sensitive=False,
-        env_file=Path(__file__).parent.parent / ".env",
+        env_file=Path(__file__).parent / ".env",
         env_prefix="BOT_",
     )

@@ -249,10 +249,7 @@ async def increase_statistics(
     database_manager : SqlDatabaseManager = Depends(get_database_manager)
 ):
     try:
-        if not params.telegram_id:
-            raise HTTPException(status_code=400, detail="User ID is required")
-
-        favorites = await database_manager.increase_statistics(params.telegram_id, params.property_id, params.param_name)
+        favorites = await database_manager.increase_statistics(params.property_id, params.param_name)
 
         return favorites
     except Exception as e:

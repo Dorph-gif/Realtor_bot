@@ -27,7 +27,7 @@ class ToFavoritesCommandHandler:
 
         try:
             database_client = get_database_service_client()
-            database_client.increase_statistics(property_id, "favorites")
+            await database_client.increase_statistics(property_id, "favorites")
 
             message = "Сохранено!"
             

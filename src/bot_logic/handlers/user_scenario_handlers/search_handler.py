@@ -80,7 +80,7 @@ class SearchCommandHandler:
         try:
             database_client = get_database_service_client()
             announcement = await database_client.get_property_description(announcement_id)
-            database_client.increase_statistics(announcement_id, "likes")
+            await database_client.increase_statistics(announcement_id, "likes")
 
             if not announcement:
                 await self.client.send_message(event.chat_id, "Ошибка отправки, попробуйте снова")

@@ -414,7 +414,7 @@ class SqlDatabaseManager:
 
             if property.area:
                 query += " AND (areas IS NULL OR areas @> $4::jsonb)"
-                params.append(property.area)
+                params.append(json.dumps(property.area))
 
             if property.rooms is not None:
                 query += " AND (min_rooms IS NULL OR max_rooms IS NULL OR (min_rooms <= $5 AND max_rooms >= $5))"

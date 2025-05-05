@@ -217,15 +217,6 @@ class AddPropertyHandler:
             respond = await database_client.new_property(user_id, self.property_params)
             property_id = respond["property_id"]
 
-            for user in respond["users_id"]:
-                message = "Посмотрите на новое объявление, подъодящее под ваши фильтры!"
-                buttons = [ 
-                    [Button.inline("Связаться с риелтором 🤝", f"like:-:{property_id}")],
-                    [Button.inline("В избранное ❤️", f"to_favorites:{property_id}")],
-                    [Button.inline("В меню", "/start")]
-                ]
-                await send_property_info(self.client, user, property_id, message=message, buttons=buttons)
-
             count = 0
             for image in images:
                 logger.info(f"Uploading image for property {property_id}")
@@ -233,9 +224,21 @@ class AddPropertyHandler:
                 count += 1
 
             await self.client.send_message(user_id, "Объект успешно загружен.", buttons=buttons)
+
+            for user in respond["users_id"]:
+                message = "Посмотрите на новое объявление, подъодящее под ваши фильтры!"
+                buttons = [ 
+                    [Button.inline("Связаться с риелтором 🤝", f"like:-:{property_id}")],
+                    [Button.inline("В избранное ❤️", f"to_favorites:{property_id}")],
+                    [Button.inline("В меню", "/start")]
+                ]
+
+                await send_property_info(self.client, user["telegram_id"], property_id, message=message, buttons=buttons)
+                await database_client.increase_statistics(property_id, "views")
+
             state_machine.end_creating_property(user_id)
         except Exception as e:
-            logger.exception(f"Error sending images to database for user {user_id}: {e}")
+            logger.info(f"Error sending images to database for user {user_id}: {e}")
             await self.client.send_message(user_id, "Произошла ошибка при загрузке фотографий", buttons=buttons)
             await state_machine.send_creating_property_message(self.client, user_id)
 
