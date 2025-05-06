@@ -85,13 +85,17 @@ class SqlDatabaseManager:
                     )
                 """
 
+                areas = None
+                if filter_data.areas:
+                    areas = json.dumps([element.strip() for element in filter_data.areas.split(",")])
+
                 values = (
                     filter_data.telegram_id,
                     filter_data.name,
                     filter_data.property_type,
                     filter_data.deal_type,
                     filter_data.city,
-                    json.dumps([element.strip() for element in filter_data.areas.split(",")]),
+                    areas,
                     filter_data.min_price,
                     filter_data.max_price,
                     filter_data.min_rooms,
@@ -350,6 +354,7 @@ class SqlDatabaseManager:
     async def is_admin(self, telegram_id: int) -> bool:
         async with self.pool.acquire() as conn:
             try:
+                await self.check_user(conn, telegram_id)
                 result = await conn.fetchrow("SELECT is_admin FROM users WHERE telegram_id = $1", telegram_id)
 
                 if not result:
@@ -399,54 +404,67 @@ class SqlDatabaseManager:
             WHERE is_active = TRUE
             """
             params = []
+            param_index = 1
 
             if property.property_type:
-                query += " AND (property_type IS NULL OR property_type = $1)"
+                query += f" AND (property_type IS NULL OR property_type = ${param_index})"
                 params.append(property.property_type)
+                param_index+=1
 
             if property.deal_type:
-                query += " AND (deal_type IS NULL OR deal_type = $2)"
+                query += f" AND (deal_type IS NULL OR deal_type = ${param_index})"
                 params.append(property.deal_type)
+                param_index+=1
 
             if property.city:
-                query += " AND (city IS NULL OR city = $3)"
+                query += f" AND (city IS NULL OR city = ${param_index})"
                 params.append(property.city)
+                param_index+=1
 
             if property.area:
-                query += " AND (areas IS NULL OR areas @> $4::jsonb)"
+                query += f" AND (areas IS NULL OR areas @> ${param_index}::jsonb)"
                 params.append(json.dumps(property.area))
+                param_index+=1
 
             if property.rooms is not None:
-                query += " AND (min_rooms IS NULL OR max_rooms IS NULL OR (min_rooms <= $5 AND max_rooms >= $5))"
+                query += f" AND (min_rooms IS NULL OR max_rooms IS NULL OR (min_rooms <= ${param_index} AND max_rooms >= ${param_index}))"
                 params.append(property.rooms)
+                param_index+=1
 
             if property.price is not None:
-                query += " AND (min_price IS NULL OR max_price IS NULL OR (min_price <= $6 AND max_price >= $6))"
+                query += f" AND (min_price IS NULL OR max_price IS NULL OR (min_price <= ${param_index} AND max_price >= ${param_index}))"
                 params.append(property.price)
+                param_index+=1
 
             if property.balcony is not None:
-                query += " AND (balcony IS NULL OR balcony = $7)"
+                query += f" AND (balcony IS NULL OR balcony = ${param_index})"
                 params.append(property.balcony)
+                param_index+=1
 
             if property.renovated:
-                query += " AND (renovated IS NULL OR renovated = $8)"
+                query += f" AND (renovated IS NULL OR renovated = ${param_index})"
                 params.append(property.renovated)
+                param_index+=1
 
             if property.total_area is not None:
-                query += " AND (min_total_area IS NULL OR max_total_area IS NULL OR (min_total_area <= $9 AND max_total_area >= $9))"
+                query += f" AND (min_total_area IS NULL OR max_total_area IS NULL OR (min_total_area <= ${param_index} AND max_total_area >= ${param_index}))"
                 params.append(property.total_area)
+                param_index+=1
 
             if property.floor is not None:
-                query += " AND (floor IS NULL OR floor = $10)"
+                query += f" AND (floor IS NULL OR floor = ${param_index})"
                 params.append(property.floor)
+                param_index+=1
 
             if property.total_floors is not None:
-                query += " AND (total_floors IS NULL OR total_floors = $11)"
+                query += f" AND (total_floors IS NULL OR total_floors = ${param_index})"
                 params.append(property.total_floors)
+                param_index+=1
 
             if property.deposit is not None:
-                query += " AND (min_deposit IS NULL OR max_deposit IS NULL OR (min_deposit <= $12 AND max_deposit >= $12))"
+                query += f" AND (min_deposit IS NULL OR max_deposit IS NULL OR (min_deposit <= ${param_index} AND max_deposit >= ${param_index}))"
                 params.append(property.deposit)
+                param_index+=1
 
             filters = await conn.fetch(query, *params)
 

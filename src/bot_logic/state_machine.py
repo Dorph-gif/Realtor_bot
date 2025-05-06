@@ -31,7 +31,7 @@ add_property_states = [
 ]
 
 user_searching_states = [
-    "NEUTRAL", "PROPERTY_FILTERS", "UPDATING", "CREATING_PROPERTY"
+    "NEUTRAL", "PROPERTY_FILTERS", "UPDATING", "CREATING_PROPERTY", "LOADING_FILE"
 ]
 
 class StateMachine:
@@ -113,7 +113,6 @@ class StateMachine:
             logger.error(f"User {user_id}: попытка сохранить неверный фильтр {filter_name}")
             raise ValueError("Wrong filter name")
         self.user_property_filters[user_id][filter_name.lower()] = value
-        logger.info(f"User {user_id}: сохранен фильтр {filter_name.lower()} = {value}")
 
     def next_property_filter(self, user_id):
         if self.user_property_state[user_id] == len(property_states) - 1:
@@ -150,7 +149,6 @@ class StateMachine:
 
     def is_valid_transition(self, user_id, expected_state):
         current_state = property_states[self.user_property_state.get(user_id)]
-        logger.info(f"For user {user_id}: real_state: {current_state}, handler_state: {expected_state}")
         return current_state == expected_state
 
     # ----------------- New property methods -----------------
@@ -160,11 +158,14 @@ class StateMachine:
         self.user_state[user_id] = "CREATING_PROPERTY"
         self.user_creating_property_param[user_id] = 0
 
+    def starting_load_by_file_property(self, user_id):
+        logger.info(f"User {user_id}: начали загрузку объекта файлом")
+        self.user_state[user_id] = "LOADING_FILE"
+
     def next_creating_property_pram(self, user_id):
         self.user_creating_property_param[user_id] += 1
 
     def get_creating_property_param(self, user_id):
-        logger.info(f"User {user_id}: получение параметра {self.user_creating_property_param[user_id]}")
         return add_property_states[self.user_creating_property_param[user_id]]
     
     async def send_creating_property_message(self, client, user_id):
@@ -173,7 +174,6 @@ class StateMachine:
             logger.error(f"User {user_id}: попытка перейти в следующее состояние после CONFIRMATION")
             self.go_neutral(user_id)
             raise ValueError("Trying to go to next state after CONFIRMATION state")
-        logger.info(f"отправка сообщения key: {key}")
         message, buttons, name, type = MESSAGES[key]
         await client.send_message(user_id, message, buttons=buttons)
 
@@ -183,7 +183,6 @@ class StateMachine:
             logger.error(f"User {user_id}: попытка перейти в следующее состояние после CONFIRMATION")
             self.go_neutral(user_id)
             raise ValueError("Trying to go to next state after CONFIRMATION state")
-        logger.info(f"отправка сообщения key: {key}")
         message, buttons, name, type = MESSAGES[key]
         return name, type    
         

@@ -37,7 +37,7 @@ def create_properties_table(conn):
                 deal_type VARCHAR(100) NOT NULL,
                 price INT NOT NULL,
                 city VARCHAR(100) NOT NULL,
-                area VARCHAR(100) NOT NULL,
+                area VARCHAR(100),
                 street VARCHAR(100),
                 house_number VARCHAR(20),
                 apartment_number VARCHAR(20),
@@ -48,7 +48,6 @@ def create_properties_table(conn):
                 floor INT,
                 total_floors INT,
                 deposit INT,
-                url, text
                 created_at TIMESTAMP DEFAULT NOW(),
                 updated_at TIMESTAMP DEFAULT NOW()
             );

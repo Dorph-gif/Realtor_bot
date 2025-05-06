@@ -211,6 +211,7 @@ class AddPropertyHandler:
         
         logger.info(f"images saved")
         
+        property_id = 0
         try:
             logger.info(f"property_params: {self.property_params}")
             database_client = get_database_service_client()
@@ -239,6 +240,8 @@ class AddPropertyHandler:
             state_machine.end_creating_property(user_id)
         except Exception as e:
             logger.info(f"Error sending images to database for user {user_id}: {e}")
+            database_client = get_database_service_client()
+            respond = await database_client.delete_property(property_id)
             await self.client.send_message(user_id, "Произошла ошибка при загрузке фотографий", buttons=buttons)
             await state_machine.send_creating_property_message(self.client, user_id)
 

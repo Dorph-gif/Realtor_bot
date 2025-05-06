@@ -43,6 +43,7 @@ async def go_to_neutral_state(user_id, client: TelegramClient):
 
     if is_user_admin:
         buttons.append([Button.inline("Добавить объявление", "/new_property")])
+        buttons.append([Button.inline("Добавить объявления файлом", "/new_property_file")])
         buttons.append([Button.inline("Просмотр объявлений", "show_properties:0")])
         buttons.append([Button.inline("Статистика", "/get_statistics")])
         buttons.append([Button.inline("Перестать быть админом", "/unregister_admin")])
@@ -197,11 +198,25 @@ async def send_property_info(client: TelegramClient, user_id: int, property_id: 
         message += f"Объявление {property_info.get('id', 'Не указано')}\n\n"
 
         message += f"Состояние: {property_info.get('state', 'Не указано')}\n"
-        message += f"Адрес: {property_info.get('city', 'Не указано')}"
-        message += f"{property_info.get('area', 'Не указано')}"
-        message += f"{property_info.get('street', 'Не указано')}"
-        message += f"{property_info.get('house_number', 'Не указано')}"
-        message += f"{property_info.get('apartment_number', 'Не указано')}\n"
+        message += f"Адрес: {property_info.get('city', ' ')}"
+
+        area_txt = property_info.get('area', None)
+        if area_txt:
+            message += f", {area_txt}"
+        
+        street_txt = property_info.get('street', None)
+        if street_txt:
+            message += f", {street_txt}"
+
+        house_number_txt = property_info.get('house_number', None)
+        if house_number_txt:
+            message += f", {house_number_txt}"
+
+        apartment_number_txt = property_info.get('apartment_number', None)
+        if apartment_number_txt:
+            message += f", {apartment_number_txt}"
+
+        message += "\n"
         
         message += f"Тип: {property_info.get('property_type', 'Не указано')}\n"
         message += f"Тип сделки: {property_info.get('deal_type', 'Не указано')}\n"

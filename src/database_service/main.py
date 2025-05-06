@@ -62,7 +62,7 @@ class Property(BaseModel):
     deal_type: str
     price: int
     city: str = None
-    area: str = None
+    area: Optional[str] = None
     street: Optional[str] = None
     house_number: Optional[str] = None
     apartment_number: Optional[str] = None

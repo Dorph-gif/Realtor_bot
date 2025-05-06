@@ -26,6 +26,7 @@ from src.bot_logic.handlers.start_handler import StartCommandHandler
 
 from src.bot_logic.handlers.admin_scenario_handlers.register_admin_handler import RegisterAdminCommandHandler
 from src.bot_logic.handlers.admin_scenario_handlers.add_property_handler import AddPropertyHandler
+from src.bot_logic.handlers.admin_scenario_handlers.add_property_file import AddPropertyFileHandler
 from src.bot_logic.handlers.admin_scenario_handlers.ad_description_handler import AdDescriptionCommandHandler
 from src.bot_logic.handlers.admin_scenario_handlers.show_properties import ShowPropertiesHandler
 
@@ -84,6 +85,9 @@ async def register_handlers(client: TelegramClient):
 
     add_property_handler = AddPropertyHandler(client)
     add_property_handler.register_handlers()
+
+    add_property_file_handler = AddPropertyFileHandler(client)
+    add_property_file_handler.register_handlers()
 
     update_handler = UpdateCommandHandler(client)
     update_handler.register_handlers()
