@@ -152,7 +152,6 @@ class AddPropertyFileHandler:
         message = ""
 
         for _, row in df.iterrows():
-            logger.info(f"Processing_property: {row}")
             property_id = 0
             try:
                 payload = {}
@@ -184,8 +183,6 @@ class AddPropertyFileHandler:
                 image_urls = str(row.get("ImageUrls", "")).split('|')
 
                 image_urls = image_urls[:10]
-
-                logger.info(f"got property: {payload}, images: {image_urls}")
 
                 database_client = get_database_service_client()
                 respond = await database_client.new_property(user_id, payload)
